@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f1e8" />
+    <title>Balancedle</title>
+</head>
+
+<body>
+    <div class="app">
+        <header class="topbar">
+            <div class="title-group">
+
+                <button id="statsButton" class="topbar-button" aria-label="Open stats" type="button">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="3" y="14" width="5" height="7"></rect>
+                        <rect x="9.5" y="9" width="5" height="12"></rect>
+                        <rect x="16" y="3" width="5" height="18"></rect>
+                    </svg>
+                </button>
+
+                <div class="title">
+                    BALANCED<span class="title-le">LE</span>
+                </div>
+
+                <button id="helpButton" class="topbar-button" aria-label="How to play" type="button">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M8.5 8.5C8.8 6.7 10.1 5.5 12 5.5c2.1 0 3.5 1.3 3.5 3.1 0 2.2-2 2.8-3 4-.5.6-.5 1-.5 1.8">
+                        </path>
+                        <rect x="11" y="17" width="2" height="2"></rect>
+                    </svg>
+                </button>
+
+            </div>
+        </header>
+
+        <main class="game-container">
+            <canvas id="game"></canvas>
+        </main>
+    </div>
+
+    <div id="resultOverlay" class="overlay hidden" aria-hidden="true">
+        <section class="result-card" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+            <button id="closeResult" class="close-button" aria-label="Close">×</button>
+
+            <div id="resultKicker" class="result-kicker">BALANCEDLE</div>
+
+            <h1 id="resultTitle" class="result-title">1 ATTEMPT</h1>
+
+            <p id="resultSummary" class="result-summary">
+                Perfect. You solved today's puzzle on your first attempt.
+            </p>
+
+            <section class="personal-stats" aria-labelledby="personalStatsTitle">
+                <h2 id="personalStatsTitle" class="stats-title">YOUR STATS</h2>
+
+                <div class="stats-grid">
+                    <div class="stat">
+                        <div id="averageAttempts" class="stat-value">2.4</div>
+                        <div class="stat-label">AVERAGE ATTEMPTS</div>
+                    </div>
+
+                    <div class="stat">
+                        <div id="daysPlayed" class="stat-value">18</div>
+                        <div class="stat-label">DAYS PLAYED</div>
+                    </div>
+
+                    <div class="stat">
+                        <div id="currentStreak" class="stat-value">5</div>
+                        <div class="stat-label">CURRENT STREAK</div>
+                    </div>
+
+                    <div class="stat">
+                        <div id="maxStreak" class="stat-value">12</div>
+                        <div class="stat-label">MAX STREAK</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="distribution" aria-labelledby="distributionTitle">
+                <h2 id="distributionTitle" class="distribution-title">
+                    PLAYER DISTRIBUTION
+                </h2>
+
+                <div id="distributionChart" class="distribution-chart">
+                    <div class="distribution-row">
+                        <span class="distribution-label">1</span>
+                        <div class="distribution-bar">
+                            <span class="distribution-fill" style="width: 42%;">42%</span>
+                        </div>
+                    </div>
+
+                    <div class="distribution-row">
+                        <span class="distribution-label">2</span>
+                        <div class="distribution-bar">
+                            <span class="distribution-fill" style="width: 31%;">31%</span>
+                        </div>
+                    </div>
+
+                    <div class="distribution-row">
+                        <span class="distribution-label">3</span>
+                        <div class="distribution-bar">
+                            <span class="distribution-fill" style="width: 17%;">17%</span>
+                        </div>
+                    </div>
+
+                    <div class="distribution-row">
+                        <span class="distribution-label">4</span>
+                        <div class="distribution-bar">
+                            <span class="distribution-fill" style="width: 7%;">7%</span>
+                        </div>
+                    </div>
+
+                    <div class="distribution-row">
+                        <span class="distribution-label">5</span>
+                        <div class="distribution-bar">
+                            <span class="distribution-fill" style="width: 3%;">3%</span>
+                        </div>
+                    </div>
+
+                    <div class="distribution-row">
+                        <span class="distribution-label">6</span>
+                        <div class="distribution-bar">
+                            <span class="distribution-fill" style="width: 2%;">2%</span>
+                        </div>
+                    </div>
+
+                    <div class="distribution-row">
+                        <span class="distribution-label">7+</span>
+                        <div class="distribution-bar">
+                            <span class="distribution-fill" style="width: 1%;">1%</span>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <div class="result-actions">
+                <button id="shareButton" class="secondary-button">SHARE</button>
+            </div>
+        </section>
+    </div>
+
+    <div id="helpOverlay" class="overlay hidden" aria-hidden="true">
+        <section class="help-card" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+            <button id="closeHelp" class="close-button" aria-label="Close" type="button">
+                ×
+            </button>
+
+            <h1 id="helpTitle" class="help-title">HOW TO PLAY</h1>
+
+            <p class="help-intro">
+                Balance the shape on top of the triangle.
+            </p>
+
+            <div class="help-instructions">
+
+                <div class="help-step">
+                    <div class="help-step-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M7 8a7 7 0 1 1-1 8"></path>
+                            <path d="M7 4v4h4"></path>
+                        </svg>
+                    </div>
+
+                    <div class="help-step-content">
+                        <h2>ROTATE</h2>
+                        <p>
+                            Interact outside the shape to rotate it.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="help-step">
+                    <div class="help-step-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 4v16"></path>
+                            <path d="M4 12h16"></path>
+                            <path d="M9 7l3-3 3 3"></path>
+                            <path d="M9 17l3 3 3-3"></path>
+                            <path d="M7 9l-3 3 3 3"></path>
+                            <path d="M17 9l3 3-3 3"></path>
+                        </svg>
+                    </div>
+
+                    <div class="help-step-content">
+                        <h2>MOVE</h2>
+                        <p>
+                            Interact inside the shape to position it.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="help-step">
+                    <div class="help-step-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 4v15"></path>
+                            <path d="M6 13l6 6 6-6"></path>
+                        </svg>
+                    </div>
+
+                    <div class="help-step-content">
+                        <h2>WATCH THE DROP</h2>
+                        <p>
+                            The shape drops after positioning. Pay attention to how it lands.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="help-step">
+                    <div class="help-step-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M9 18h6"></path>
+                            <path d="M10 21h4"></path>
+                            <path
+                                d="M8.5 14.5C7.6 13.6 7 12.3 7 11a5 5 0 0 1 10 0c0 1.3-.6 2.6-1.5 3.5-.7.7-1.1 1.3-1.2 2.5h-4.6c-.1-1.2-.5-1.8-1.2-2.5Z">
+                            </path>
+                        </svg>
+                    </div>
+
+                    <div class="help-step-content">
+                        <h2>USE THE HINTS</h2>
+                        <p>
+                            Some hints will appear as you use more attempts.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="help-goal">
+                USE AS FEW ATTEMPTS AS POSSIBLE
+            </div>
+            <div class="help-daily-note">
+                A NEW PUZZLE IS AVAILABLE EVERY DAY AT 00:00 UTC.
+            </div>
+
+            <button id="closeHelpButton" class="secondary-button" type="button">
+                GOT IT
+            </button>
+        </section>
+    </div>
+
+    <div id="finishNotification" class="finish-notification" role="status" aria-live="polite" aria-hidden="true">
+        FINISH TODAY'S PUZZLE TO SEE STATS
+    </div>
+
+
+    <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>

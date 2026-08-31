@@ -1,0 +1,565 @@
+:root {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 400;
+    color: #11110f;
+    background: #f4f1e8;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+}
+
+* {
+    box-sizing: border-box;
+    /* outline: 5px solid red; */
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.topbar {
+    height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f4f1e8;
+}
+
+.title-group {
+    display: flex;
+    align-items: center;
+    gap: 100px;
+}
+
+.title {
+    font-size: 30px;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.title-le {
+    color: #b6542b;
+}
+
+/* Header buttons */
+
+.topbar-button {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    padding: 0;
+    border: 0;
+    background: transparent;
+
+    color: #11110f;
+    cursor: pointer;
+}
+
+.topbar-button svg {
+    display: block;
+    width: 30px;
+    height: 30px;
+}
+
+/* Stats icon */
+
+#statsButton svg rect {
+    fill: currentColor;
+}
+
+/* Help icon */
+
+#helpButton svg {
+    transform: translateX(0px);
+}
+
+#helpButton svg path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.8;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+}
+
+#helpButton svg rect {
+    fill: currentColor;
+}
+
+/* Interaction */
+
+.topbar-button:hover {
+    color: #b6542b;
+}
+
+.topbar-button:active {
+    transform: scale(0.92);
+}
+
+/* Break */
+
+.title {
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.title-le {
+    color: #b6542b;
+}
+
+.game-container {
+    position: fixed;
+    top: 90px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    touch-action: none;
+    cursor: grab;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #f4f1e8;
+    min-height: 600px;
+}
+
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(17, 17, 15, 0.18);
+    backdrop-filter: blur(8px);
+    padding: 24px;
+    z-index: 10;
+}
+
+.hidden {
+    display: none;
+}
+
+.result-card {
+    position: relative;
+    width: min(550px, 100%);
+    padding: 50px;
+    background: #f8f5ec;
+    border-radius: 26px;
+    box-shadow: 0 24px 70px rgba(17, 17, 15, 0.16);
+    text-align: center;
+}
+
+.close-button {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 30px;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+/* Result */
+
+.result-kicker {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    opacity: 0.55;
+}
+
+.result-title {
+    margin: 14px 0 12px;
+    font-size: clamp(46px, 10vw, 72px);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.result-summary {
+    max-width: 430px;
+    margin: 0 auto;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+/* Personal stats */
+
+.personal-stats {
+    margin: 42px 0 40px;
+}
+
+.stats-title,
+.distribution-title {
+    margin: 0 0 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    opacity: 0.55;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.stat {
+    min-width: 0;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 34px;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.stat-label {
+    margin-top: 9px;
+    font-size: 10px;
+    line-height: 1.35;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    opacity: 0.55;
+}
+
+/* Player distribution */
+
+.distribution {
+    margin: 0 0 40px;
+    text-align: left;
+}
+
+.distribution-chart {
+    display: grid;
+    gap: 10px;
+}
+
+.distribution-row {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    align-items: center;
+    gap: 10px;
+}
+
+.distribution-label {
+    font-size: 14px;
+    font-weight: 800;
+    text-align: right;
+}
+
+.distribution-bar {
+    height: 32px;
+    overflow: hidden;
+    border-radius: 6px;
+    background: rgba(17, 17, 15, 0.08);
+}
+
+.distribution-fill {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 40px;
+    height: 100%;
+    padding: 0 10px;
+    border-radius: 6px;
+    background: #11110f;
+    color: #f4f1e8;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* Share */
+
+.result-actions {
+    margin-top: 30px;
+}
+
+.secondary-button {
+    width: 100%;
+    height: 52px;
+    border: 1px solid rgba(17, 17, 15, 0.2);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    transition:
+        background 150ms ease,
+        color 150ms ease,
+        border-color 150ms ease;
+
+}
+
+.secondary-button:hover {
+    background: #11110f;
+    color: #f4f1e8;
+    border-color: #11110f;
+}
+
+/* Help popup */
+
+.help-card {
+    position: relative;
+
+    width: min(520px, 100%);
+    max-height: calc(100vh - 32px);
+
+    padding: 48px 50px;
+
+    overflow-y: auto;
+
+    background: #f8f5ec;
+    border-radius: 26px;
+
+    box-shadow: 0 24px 70px rgba(17, 17, 15, 0.16);
+
+    text-align: center;
+}
+
+.help-title {
+    margin: 0 0 14px;
+
+    font-size: clamp(42px, 9vw, 56px);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+}
+
+.help-intro {
+    max-width: 380px;
+    margin: 0 auto 34px;
+
+    font-size: 17px;
+    line-height: 1.45;
+}
+
+/* Tutorial instructions */
+
+.help-instructions {
+    display: grid;
+    gap: 22px;
+
+    margin: 0 0 30px;
+
+    text-align: left;
+}
+
+.help-step {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 14px;
+
+    align-items: center;
+}
+
+.help-step-icon {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    color: #11110f;
+}
+
+.help-step-icon svg {
+    display: block;
+
+    width: 30px;
+    height: 30px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+}
+
+.help-step-content h2 {
+    margin: 0 0 5px;
+
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.help-step-content p {
+    margin: 0;
+
+    font-size: 14px;
+    line-height: 1.45;
+
+    opacity: 0.65;
+}
+
+.help-daily-note {
+    margin: -12px 0 28px;
+
+    font-size: 10px;
+    line-height: 1.4;
+
+    font-weight: 800;
+    letter-spacing: 0.09em;
+
+    opacity: 0.45;
+}
+
+/* Goal */
+
+.help-goal {
+    margin: 4px 0 30px;
+
+    font-size: 13px;
+    line-height: 1.4;
+
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.result-summary,
+.help-intro {
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+/* Finish game notification */
+
+.finish-notification {
+    position: fixed;
+    top: 110px;
+    left: 50%;
+    z-index: 20;
+    width: min(360px, calc(100% - 32px));
+    padding: 16px 20px;
+    transform: translate(-50%, -8px);
+    opacity: 0;
+    background: #f8f5ec;
+    color: #11110f;
+    border: 1px solid rgba(17, 17, 15, 0.12);
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(17, 17, 15, 0.10);
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.finish-notification.visible {
+    transform: translate(-50%, 0);
+    opacity: 1;
+}
+
+/* Smaller screens */
+
+@media (max-width: 550px) {
+    .overlay {
+        padding: 16px;
+    }
+
+    .result-card {
+        padding: 42px 24px;
+    }
+
+    .stats-grid {
+        gap: 10px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+    }
+
+    .stat-label {
+        font-size: 9px;
+    }
+
+    .title-group {
+        gap: 70px;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+
+    .topbar-button {
+        width: 34px;
+        height: 34px;
+    }
+
+    .topbar-button svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .help-card {
+        padding: 42px 24px;
+        max-height: calc(100vh - 32px);
+    }
+
+    .help-title {
+        font-size: 40px;
+    }
+
+    .help-intro {
+        font-size: 16px;
+        margin-bottom: 28px;
+    }
+
+    .help-instructions {
+        gap: 18px;
+    }
+
+    .help-step {
+        grid-template-columns: 34px 1fr;
+        gap: 12px;
+    }
+
+    .help-step-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .help-step-icon svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .help-step-content p {
+        font-size: 13px;
+    }
+
+    .help-goal {
+        font-size: 12px;
+    }
+
+    .finish-notification {
+        top: 102px;
+        width: min(320px, calc(100% - 32px));
+        padding: 14px 18px;
+        font-size: 11px;
+    }
+}

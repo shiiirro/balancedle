@@ -1,6 +1,10 @@
-# Balance Daily
+# Balancedle
 
 A tiny deterministic daily balancing puzzle game built with Vite + TypeScript + Canvas.
+
+## Deployment
+
+Live site: https://balancedle-shiiirro.vercel.app/
 
 ## Stack
 

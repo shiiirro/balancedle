@@ -17,17 +17,17 @@ export async function getPlayer(): Promise<string | null> {
     }
 
     if (session) {
-        console.log("Already signed in:", session.user.id);
+        // console.log("Already signed in:", session.user.id);
         return session.user.id;
     }
 
     const { data, error: signInError } = await supabase.auth.signInAnonymously();
 
     if (signInError) {
-        console.error("Anonymous sign-in failed:", signInError);
+        // console.error("Anonymous sign-in failed:", signInError);
         return null;
     }
 
-    console.log("Anonymous user:", data.user?.id);
+    // console.log("Anonymous user:", data.user?.id);
     return data.user?.id || null;
 }

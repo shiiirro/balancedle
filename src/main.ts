@@ -46,8 +46,6 @@ async function showResult(attempts: number): Promise<void> {
         },
     });
 
-    console.log("Response:", data);
-
     if (error) {
         console.error("Function error:", error);
         if (error instanceof FunctionsHttpError) {

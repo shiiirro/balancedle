@@ -141,7 +141,8 @@ canvas {
     place-items: center;
     background: rgba(17, 17, 15, 0.18);
     backdrop-filter: blur(8px);
-    padding: 24px;
+    padding: 16px;
+    overflow-y: auto;
     z-index: 10;
 }
 
@@ -152,7 +153,9 @@ canvas {
 .result-card {
     position: relative;
     width: min(550px, 100%);
-    padding: 50px;
+    max-height: calc(100vh - 32px);
+    padding: 42px 40px;
+    overflow-y: auto;
     background: #f8f5ec;
     border-radius: 26px;
     box-shadow: 0 24px 70px rgba(17, 17, 15, 0.16);
@@ -478,11 +481,15 @@ canvas {
 
 @media (max-width: 550px) {
     .overlay {
-        padding: 16px;
+        padding: 12px;
+        place-items: start center;
     }
 
     .result-card {
-        padding: 42px 24px;
+        width: 100%;
+        max-height: calc(100vh - 24px);
+        padding: 40px 20px 24px;
+        border-radius: 22px;
     }
 
     .stats-grid {

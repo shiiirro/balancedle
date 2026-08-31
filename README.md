@@ -1,6 +1,6 @@
 # Balance Daily
 
-A tiny deterministic daily balancing puzzle built with Vite + TypeScript + Canvas.
+A tiny deterministic daily balancing puzzle game built with Vite + TypeScript + Canvas.
 
 ## Stack
 

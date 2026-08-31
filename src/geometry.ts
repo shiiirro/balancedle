@@ -185,6 +185,23 @@ export function pointInPolygon(point: Point, polygon: Point[]): boolean {
     return inside;
 }
 
+export function pointInShapeBounds(point: Point, polygon: Point[]): boolean {
+    const xs = polygon.map((p) => p.x);
+    const ys = polygon.map((p) => p.y);
+
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+
+    return (
+        point.x >= minX &&
+        point.x <= maxX &&
+        point.y >= minY &&
+        point.y <= maxY
+    );
+}
+
 export function rotatePolygonAroundPoint(polygon: Point[], pivot: Point, radians: number): Point[] {
     const c = Math.cos(radians);
     const s = Math.sin(radians);
@@ -266,3 +283,4 @@ export function cross(a: Point, b: Point): number {
 export function samePoint(a: Point, b: Point): boolean {
     return Math.abs(a.x - b.x) < EPSILON && Math.abs(a.y - b.y) < EPSILON;
 }
+

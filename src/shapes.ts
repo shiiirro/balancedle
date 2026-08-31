@@ -305,7 +305,7 @@ function makeDent(polygon: Point[], edgeIndex: number, position: number, random:
         return null;
     }
 
-    const depth = randomRange(DENT_MIN_DEPTH, safeDepth, random);
+    const depth = DENT_MIN_DEPTH + (safeDepth - DENT_MIN_DEPTH) * 0.5 ** random();
     
     const dentPoint = add(edgePoint, mul(dentDirection, depth));
 

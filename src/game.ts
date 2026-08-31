@@ -1,4 +1,4 @@
-import { clamp, degrees, angleFromHorizontal, findVerticalSupport, pointInPolygon, Point, centerOfMass, transformPolygon, SupportResult, randomNormal } from "./geometry";
+import { clamp, degrees, angleFromHorizontal, findVerticalSupport, pointInPolygon, Point, centerOfMass, transformPolygon, SupportResult, randomNormal, pointInShapeBounds } from "./geometry";
 import { createDailyPuzzle, PuzzleDefinition } from "./puzzles";
 import { save, load } from "./persistence/local";
 
@@ -26,12 +26,18 @@ interface ConfettiParticle {
     age: number;
 }
 
+interface TextHint {
+    text: string;
+    visibleText: string;
+    elapsed: number;
+}
+
 export const WORLD_HEIGHT = 1000;
 export const FULCRUM_X = 0;
 export const FULCRUM_Y = WORLD_HEIGHT - 200;
 
-const FULCRUM_BASE_HALF_WIDTH = 35;
-const FULCRUM_BASE_HEIGHT = 70;
+const FULCRUM_BASE_HALF_WIDTH = 30;
+const FULCRUM_BASE_HEIGHT = 60;
 
 const GRAVITY = 3000;
 const ROTATION_CURSOR_DISTANCE = 8;
@@ -43,6 +49,16 @@ const SHAKE_DURATION = 0.3;
 const SHAKE_INTENSITY_SCALAR = 1;
 const SUCCESS_DURATION = 0.8;
 const SUCCESS_SQUASH = 30;
+const CONFETTI_COUNT = 100;
+const HINT_CHAR_SPEED = 0.05;
+const HINT_HOLD_DURATION = 1.5;
+const HINT_GAP_DURATION = 0.4;
+
+const HINTS = {
+    miscHints: ["Watch the shape after contact.", "Learn from the last attempt.", "I hope you know what torque is.", "Only the tip of the triangle matters."],
+    edgeHints: ["Have you tried a flatter edge?", "Try to land on a horizontal part.", "Look for a level surface.", "A flatter edge might help.", "The lower the center of mass, the better."],
+    comHints: ["Look for the center of mass.", "Center the mass over the contact.", "Notice which way it tips?", "Think about the weight distribution."],
+};
 
 export class Balancedle {
     // Core refs
@@ -84,6 +100,8 @@ export class Balancedle {
     private renderOffset: Point = { x: 0, y: 0 };
 
     private confetti: ConfettiParticle[] = [];
+    private textHintQueue: TextHint[] = [];
+    private usedHints = new Set<string>();
 
     // Stats
     private attempts = 0;
@@ -155,7 +173,6 @@ export class Balancedle {
         const saved = load();
         if (saved) {
             if (saved.puzzleId !== this.puzzle.id) {
-                console.log("Puzzle ID mismatch.");
                 return;
             }
             this.gameState = saved.gameState;
@@ -163,7 +180,6 @@ export class Balancedle {
             this.hintStage = saved.hintStage;
             this.pose = { ...this.pose, x: saved.x, y: saved.y, rotation: saved.rotation };
         } else {
-            console.log("No gamesave found.");
         }
     }
 
@@ -172,7 +188,7 @@ export class Balancedle {
 
         const pointer = this.eventPoint(event);
 
-        if (pointInPolygon(pointer, this.currentShape())) {
+        if (pointInShapeBounds(pointer, this.currentShape())) {
             this.interactionState = "dragging";
             this.dragOffset = {
                 x: pointer.x - this.pose.x,
@@ -312,6 +328,7 @@ export class Balancedle {
             // Do nothing
         }
         this.updateConfetti(frametime);
+        this.updateTextHint(frametime);
         this.animPrevFrameTime = currFrame;
     }
 
@@ -323,8 +340,11 @@ export class Balancedle {
         this.ctx.fillStyle = "#f4f1e8";
         this.ctx.fillRect(-this.visibleLogicalWidth / 2, 0, this.visibleLogicalWidth, WORLD_HEIGHT);
 
-        this.drawHintLine();
         this.drawAttemptCount();
+        this.drawTextHint();
+
+        this.drawHintLine();
+
         this.ctx.translate(this.renderOffset.x, this.renderOffset.y);
         this.drawFulcrum();
         this.drawPolygon(this.currentShape());
@@ -356,6 +376,9 @@ export class Balancedle {
     private drawAttemptCount(): void {
         this.ctx.fillStyle = "#d8d4ca";
         this.ctx.font = "800 200px Inter, sans-serif";
+        if (this.visibleLogicalWidth < 1000) {
+            this.ctx.font = "800 180px Inter, sans-serif";
+        }
         this.ctx.textAlign = "right";
         this.ctx.textBaseline = "top";
         this.ctx.fillText(String(this.attempts).padStart(2, "0"), this.visibleLogicalWidth / 2 - 40, 35);
@@ -367,21 +390,51 @@ export class Balancedle {
         const normalTorque = this.supportData.contactOffset.x * Math.cos(edgeAngle) + -this.supportData.contactOffset.y * Math.sin(edgeAngle);
         const gravityTorque = this.supportData.contactOffset.x;
 
-        console.log({ edgeAngle, normalTorque, gravityTorque });
-
         if (Math.abs(gravityTorque) < MIN_ERROR && Math.abs(normalTorque) < (MIN_ERROR * 2) / 3) {
             this.dropError = 0;
+            this.setAnimState("success");
         } else {
             this.dropError = gravityTorque + normalTorque * 0.3;
             this.pose.vx = -Math.sign(gravityTorque) * clamp(Math.abs(this.dropError), 100, 200) * VELOCITY_ERROR_FACTOR;
             this.pose.vy = -Math.min(Math.abs(this.dropError), MAX_ERROR_BOUNCE) * VELOCITY_ERROR_FACTOR;
             this.pose.vr = -Math.sign(this.dropError) * Math.min(Math.abs(this.dropError), 200) * SPIN_ERROR_FACTOR;
-        }
-        if (this.dropError === 0) {
-            this.setAnimState("success");
-        } else {
+            if (this.textHintQueue.length <= 1) {
+                const hintText = this.getRandomHint(gravityTorque, normalTorque);
+                if (hintText) {
+                    this.addTextHint(hintText);
+                }
+            }
             this.setAnimState("failure");
         }
+    }
+
+    private getRandomHint(gravityTorque: number, normalTorque: number): string | null {
+        if (Math.random() < 0.0001) {
+            return "I miss her.";
+        }
+        let hints = HINTS.miscHints;
+        if (Math.random() < 0.8) {
+            if (Math.abs(gravityTorque) >= MIN_ERROR && Math.sign(this.dropError) === Math.sign(gravityTorque)) {
+                hints = HINTS.comHints;
+            } else if (Math.abs(gravityTorque) < MIN_ERROR) {
+                hints = HINTS.edgeHints;
+            }
+        }
+        const hint = this.getUnusedHint(hints);
+        if (hint) {
+            return hint;
+        }
+        return null;
+    }
+
+    private getUnusedHint(hints: string[]): string | null {
+        const availableHints = hints.filter((hint) => !this.usedHints.has(hint));
+        if (availableHints.length === 0) {
+            return null;
+        }
+        const hint = availableHints[Math.floor(Math.random() * availableHints.length)];
+        this.usedHints.add(hint);
+        return hint;
     }
 
     private isShapeOffscreen(margin = 120): boolean {
@@ -433,10 +486,79 @@ export class Balancedle {
         this.animElapsedTime = 0;
     }
 
+    private addTextHint(text: string): void {
+        this.textHintQueue.push({
+            text,
+            visibleText: "",
+            elapsed: 0,
+        });
+    }
+
+    private updateTextHint(deltaTime: number): void {
+        const hint = this.textHintQueue[0];
+
+        if (!hint) {
+            return;
+        }
+
+        hint.elapsed += deltaTime;
+        const revealDuration = hint.text.length * HINT_CHAR_SPEED;
+        const holdEnd = revealDuration + HINT_HOLD_DURATION;
+        const disappearEnd = holdEnd + revealDuration;
+        const removeTime = disappearEnd + HINT_GAP_DURATION;
+
+        if (hint.elapsed >= removeTime) {
+            this.textHintQueue.shift();
+            return;
+        }
+
+        if (hint.elapsed < revealDuration) {
+            const characters = Math.floor(hint.elapsed / HINT_CHAR_SPEED);
+            hint.visibleText = hint.text.slice(0, characters);
+            return;
+        }
+
+        if (hint.elapsed < holdEnd) {
+            hint.visibleText = hint.text;
+            return;
+        }
+
+        if (hint.elapsed < disappearEnd) {
+            const disappearTime = hint.elapsed - holdEnd;
+            const characters = hint.text.length - Math.floor(disappearTime / HINT_CHAR_SPEED);
+            hint.visibleText = hint.text.slice(0, characters);
+            return;
+        }
+
+        hint.visibleText = "";
+    }
+
+    private drawTextHint(): void {
+        const hint = this.textHintQueue[0];
+
+        if (!hint || !hint.visibleText) {
+            return;
+        }
+
+        this.ctx.save();
+
+        this.ctx.fillStyle = "#d8d4ca";
+        this.ctx.font = "800 30px Inter, sans-serif";
+        if (this.visibleLogicalWidth < 1000) {
+            this.ctx.font = "800 26px Inter, sans-serif";
+        }
+        this.ctx.textAlign = "left";
+        this.ctx.textBaseline = "bottom";
+
+        this.ctx.fillText(hint.visibleText, -this.visibleLogicalWidth / 2 + 40, WORLD_HEIGHT - 50);
+
+        this.ctx.restore();
+    }
+
     private spawnConfetti(): void {
         const colors = ["#e4572e", "#f26a3d", "#f48c4a", "#f3a35c", "#d94a24", "#c94020"];
 
-        const particleCount = 200;
+        const particleCount = CONFETTI_COUNT;
         const particlesPerSide = particleCount / 2;
 
         for (const side of [-1, 1]) {
@@ -517,7 +639,7 @@ export class Balancedle {
 
         this.ctx.beginPath();
         this.ctx.moveTo(0, 0);
-        this.ctx.lineTo(0, WORLD_HEIGHT);
+        this.ctx.lineTo(0, FULCRUM_Y);
         this.ctx.stroke();
 
         this.ctx.restore();

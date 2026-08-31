@@ -4,7 +4,7 @@ A tiny deterministic daily balancing puzzle game built with Vite + TypeScript + 
 
 ## Deployment
 
-Live site: https://balancedle-shiiirro.vercel.app/
+Live site: https://balancedle.com
 
 ## Stack
 

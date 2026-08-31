@@ -487,21 +487,83 @@ canvas {
 
     .result-card {
         width: 100%;
-        max-height: calc(100vh - 24px);
-        padding: 40px 20px 24px;
-        border-radius: 22px;
+        padding: 32px 20px 24px;
+        border-radius: 20px;
+    }
+
+    .close-button {
+        top: 10px;
+        right: 14px;
+        font-size: 26px;
+    }
+
+    .result-kicker {
+        font-size: 11px;
+    }
+
+    .result-title {
+        margin: 10px 0 8px;
+        font-size: 42px;
+    }
+
+    .result-summary {
+        font-size: 14px;
+        line-height: 1.35;
+    }
+
+    .personal-stats {
+        margin: 28px 0 26px;
+    }
+
+    .stats-title,
+    .distribution-title {
+        margin-bottom: 14px;
+        font-size: 11px;
     }
 
     .stats-grid {
-        gap: 10px;
+        gap: 8px;
     }
 
     .stat-value {
-        font-size: 28px;
+        font-size: 24px;
     }
 
     .stat-label {
-        font-size: 9px;
+        margin-top: 6px;
+        font-size: 8px;
+    }
+
+    .distribution-chart {
+        gap: 7px;
+    }
+
+    .distribution-row {
+        grid-template-columns: 24px 1fr;
+        gap: 7px;
+    }
+
+    .distribution-label {
+        font-size: 12px;
+    }
+
+    .distribution-bar {
+        height: 27px;
+    }
+
+    .distribution-fill {
+        min-width: 34px;
+        padding: 0 8px;
+        font-size: 11px;
+    }
+
+    .result-actions {
+        margin-top: 24px;
+    }
+
+    .secondary-button {
+        height: 46px;
+        font-size: 11px;
     }
 
     .title-group {

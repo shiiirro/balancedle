@@ -54,7 +54,7 @@ export function createDailyPuzzle(dayKey = getDayKey()): PuzzleDefinition {
     // dayKey = Math.random().toString(36).substring(2, 8);
     const seed = hashString(dayKey);
     const random = mulberry32(seed);
-    const tmp = generateRandomShape(4, 0.35, 0.55, 350, random);
+    const tmp = generateRandomShape(4 + Math.floor(random() * (6)), 0.5, 0.8, 350, random);
     const shape = centerShape(tmp).map((point) => ({
         x: point.x,
         y: point.y,

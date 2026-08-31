@@ -2,6 +2,7 @@ import "./style.css";
 import { Balancedle } from "./game";
 import { getPlayer, supabase } from "./persistence/supabase";
 import { createClient, FunctionsHttpError } from "@supabase/supabase-js";
+import { load } from "./persistence/local";
 
 let hasStats = false;
 let notificationTimeout: number | undefined;
@@ -189,3 +190,8 @@ shareButton.addEventListener("click", async () => {
         shareButton.textContent = text;
     }
 });
+
+if (!load()) {
+    helpOverlay.classList.remove("hidden");
+    helpOverlay.setAttribute("aria-hidden", "false");
+}

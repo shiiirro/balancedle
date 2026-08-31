@@ -482,7 +482,7 @@ canvas {
 @media (max-width: 550px) {
     .overlay {
         padding: 12px;
-        place-items: start center;
+        place-items: center;
     }
 
     .result-card {

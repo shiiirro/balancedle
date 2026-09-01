@@ -204,7 +204,7 @@ export class Balancedle {
 
         const pointer = this.eventPoint(event);
 
-        if (pointInShapeBounds(pointer, this.currentShape())) {
+        if (pointInPolygon(pointer, this.currentShape())) {
             this.interactionState = "dragging";
             this.dragOffset = {
                 x: pointer.x - this.pose.x,

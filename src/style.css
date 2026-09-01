@@ -158,7 +158,6 @@ canvas {
     overflow-y: auto;
     background: #f8f5ec;
     border-radius: 26px;
-    box-shadow: 0 24px 70px rgba(17, 17, 15, 0.16);
     text-align: center;
 }
 
@@ -337,8 +336,6 @@ canvas {
     background: #f8f5ec;
     border-radius: 26px;
 
-    box-shadow: 0 24px 70px rgba(17, 17, 15, 0.16);
-
     text-align: center;
 }
 
@@ -466,7 +463,6 @@ canvas {
     color: #11110f;
     border: 1px solid rgba(17, 17, 15, 0.12);
     border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(17, 17, 15, 0.10);
     text-align: center;
     font-size: 12px;
     line-height: 1.3;

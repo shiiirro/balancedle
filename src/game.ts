@@ -387,7 +387,7 @@ export class Balancedle {
     private evalDrop(): void {
         if (!this.supportData) throw new Error("This should only be called after a drop with support data");
         const edgeAngle = angleFromHorizontal(this.supportData.edgeAngle);
-        const normalTorque = this.supportData.contactOffset.x * Math.cos(edgeAngle) + -Math.min(this.supportData.contactOffset.y, 100) * Math.sin(edgeAngle);
+        const normalTorque = this.supportData.contactOffset.x * Math.cos(edgeAngle) + -Math.sign(this.supportData.contactOffset.y) * Math.min(Math.abs(this.supportData.contactOffset.y), 100) * Math.sin(edgeAngle);
         console.log(normalTorque);
         const gravityTorque = this.supportData.contactOffset.x;
 

@@ -55,8 +55,8 @@ const HINT_HOLD_DURATION = 1.5;
 const HINT_GAP_DURATION = 0.4;
 
 const HINTS = {
-    miscHints: ["Watch the shape after contact.", "Learn from the last attempt.", "I hope you know what torque is.", "Only the tip of the triangle matters."],
-    edgeHints: ["Have you tried a flatter edge?", "Try to land on a horizontal part.", "Look for a level surface.", "A flatter edge might help.", "The lower the center of mass, the better."],
+    miscHints: ["Watch the shape after contact.", "Learn from the last attempt.", "Torque.", "Only the tip of the triangle matters."],
+    edgeHints: ["Have you tried a flatter edge?", "Try to land on a horizontal part.", "Look for a level surface.", "A flatter edge might help.", "The closer the center of mass, the better."],
     comHints: ["Look for the center of mass.", "Center the mass over the contact.", "Notice which way it tips?", "Think about the weight distribution."],
 };
 
@@ -387,7 +387,8 @@ export class Balancedle {
     private evalDrop(): void {
         if (!this.supportData) throw new Error("This should only be called after a drop with support data");
         const edgeAngle = angleFromHorizontal(this.supportData.edgeAngle);
-        const normalTorque = this.supportData.contactOffset.x * Math.cos(edgeAngle) + -this.supportData.contactOffset.y * Math.sin(edgeAngle);
+        const normalTorque = this.supportData.contactOffset.x * Math.cos(edgeAngle) + -Math.min(this.supportData.contactOffset.y, 100) * Math.sin(edgeAngle);
+        console.log(normalTorque);
         const gravityTorque = this.supportData.contactOffset.x;
 
         if (Math.abs(gravityTorque) < MIN_ERROR && Math.abs(normalTorque) < (MIN_ERROR * 2) / 3) {

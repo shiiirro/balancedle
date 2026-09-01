@@ -287,6 +287,10 @@ canvas {
     font-weight: 800;
 }
 
+.distribution-fill.current {
+    background: #b6542b;
+}
+
 /* Share */
 
 .result-actions {

@@ -51,7 +51,7 @@ export function getDayKey(date = new Date()): string {
 }
 
 export function createDailyPuzzle(dayKey = getDayKey()): PuzzleDefinition {
-    const seed = hashString(dayKey + "salt");
+    const seed = hashString(dayKey);
     const random = mulberry32(seed);
     const tmp = generateRandomShape(4 + Math.floor(random() * (6)), 0.5, 0.8, 330, random);
     const shape = centerShape(tmp).map((point) => ({

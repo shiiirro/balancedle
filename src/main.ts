@@ -79,7 +79,7 @@ async function showResult(attempts: number): Promise<void> {
 
     maxStreak.textContent = String(data?.stats?.maxStreak || 0);
 
-    renderDistribution(distribution);
+    renderDistribution(distribution, attempts);
 
     resultOverlay.classList.remove("hidden");
     resultOverlay.setAttribute("aria-hidden", "false");
@@ -87,7 +87,7 @@ async function showResult(attempts: number): Promise<void> {
     hasStats = true;
 }
 
-function renderDistribution(distribution: number[]): void {
+function renderDistribution(distribution: number[], playerAttempts: number): void {
     distributionChart.replaceChildren();
 
     const labels = ["1", "2", "3", "4", "5", "6", "7+"];
@@ -115,6 +115,10 @@ function renderDistribution(distribution: number[]): void {
         fill.style.width = `${Math.max((percentage / maxPercentage) * 100, percentage > 0 ? 3 : 0)}%`;
 
         fill.textContent = `${percentage.toFixed(0)}%`;
+
+        if (index === playerAttempts - 1 || (playerAttempts >= 7 && index === 6)) {
+            fill.classList.add("current");
+        }
 
         bar.appendChild(fill);
         row.append(label, bar);

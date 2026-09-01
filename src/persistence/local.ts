@@ -10,7 +10,7 @@ export interface SavedGameState {
     hintStage: number;
 }
 
-const STORAGE_KEY = "balancedle3";
+const STORAGE_KEY = "balancedle4";
 
 export function save(state: SavedGameState): void {
     const json = JSON.stringify(state);

@@ -1,4 +1,16 @@
-import { clamp, degrees, angleFromHorizontal, findVerticalSupport, pointInPolygon, Point, centerOfMass, transformPolygon, SupportResult, randomNormal, pointInShapeBounds } from "./geometry";
+import {
+    clamp,
+    degrees,
+    angleFromHorizontal,
+    findVerticalSupport,
+    pointInPolygon,
+    Point,
+    centerOfMass,
+    transformPolygon,
+    SupportResult,
+    randomNormal,
+    pointInShapeBounds,
+} from "./geometry";
 import { createDailyPuzzle, PuzzleDefinition } from "./puzzles";
 import { save, load } from "./persistence/local";
 
@@ -55,9 +67,59 @@ const HINT_HOLD_DURATION = 1.5;
 const HINT_GAP_DURATION = 0.4;
 
 const HINTS = {
-    miscHints: ["Watch the shape after contact.", "Learn from the last attempt.", "Torque.", "Only the tip of the triangle matters."],
-    edgeHints: ["Have you tried a flatter edge?", "Try to land on a horizontal part.", "Look for a level surface.", "A flatter edge might help.", "The closer the center of mass, the better."],
-    comHints: ["Look for the center of mass.", "Center the mass over the contact.", "Notice which way it tips?", "Think about the weight distribution."],
+    miscHints: [
+        "Watch the shape after contact.",
+        "Learn from the last attempt.",
+        "Torque.",
+        "Only the tip of the triangle matters.",
+        "Try fingers but hole",
+        "Watch how it fails. Seriously.",
+        "Small changes can matter.",
+        "Pay attention to the landing.",
+        "Try a different approach.",
+        "Watch where it wants to fall.",
+        "The landing tells you something.",
+        "Think before you drop.",
+        "A little adjustment can help.",
+        "What made it tip?",
+        "Let the last attempt teach you.",
+    ],
+
+    edgeHints: [
+        "Have you tried a flatter edge?",
+        "Try to land on a horizontal part.",
+        "Look for a level surface.",
+        "A flatter edge might help.",
+        "The closer the center of mass, the better.",
+        "Keep the contact surface flat.",
+        "Try landing more level.",
+        "Rotate for a flatter contact.",
+        "A level edge is easier to balance.",
+        "Mind the angle at contact.",
+        "Try a more stable contact.",
+        "The contact surface matters.",
+        "Aim for a flatter landing.",
+        "Keep the edge horizontal.",
+        "Find a better place to make contact.",
+    ],
+
+    comHints: [
+        "Look for the center of mass.",
+        "Center the mass over the contact.",
+        "Notice which way it tips?",
+        "Think about the weight distribution.",
+        "Why does the shape tip?",
+        "Where would it balance?",
+        "Find the balance point.",
+        "Watch where the weight sits.",
+        "Move the center over the fulcrum.",
+        "Think about where the mass is.",
+        "The center of mass matters.",
+        "Keep the weight over the contact.",
+        "Where is the heavy side?",
+        "Balance the mass over the fulcrum.",
+        "Find its natural balance point.",
+    ],
 };
 
 export class Balancedle {
@@ -239,7 +301,15 @@ export class Balancedle {
         if (prev === "dragging") {
             this.gameState = "calc";
         }
-        save({ puzzleId: this.puzzle.id, attempts: this.attempts, gameState: this.gameState, x: this.pose.x, y: this.pose.y, rotation: this.pose.rotation, hintStage: this.hintStage });
+        save({
+            puzzleId: this.puzzle.id,
+            attempts: this.attempts,
+            gameState: this.gameState,
+            x: this.pose.x,
+            y: this.pose.y,
+            rotation: this.pose.rotation,
+            hintStage: this.hintStage,
+        });
     }
 
     private pointerCancel(event: PointerEvent): void {
@@ -303,7 +373,15 @@ export class Balancedle {
                 this.renderOffset = { x: 0, y: this.getSuccessOffsetY() };
                 if (this.animElapsedTime >= SUCCESS_DURATION) {
                     this.gameState = "stats";
-                    save({ puzzleId: this.puzzle.id, attempts: this.attempts, gameState: this.gameState, x: this.pose.x, y: this.pose.y, rotation: this.pose.rotation, hintStage: this.hintStage });
+                    save({
+                        puzzleId: this.puzzle.id,
+                        attempts: this.attempts,
+                        gameState: this.gameState,
+                        x: this.pose.x,
+                        y: this.pose.y,
+                        rotation: this.pose.rotation,
+                        hintStage: this.hintStage,
+                    });
                 }
             } else if (this.animState === "failure") {
                 this.pose.vy += GRAVITY * frametime;
@@ -317,7 +395,15 @@ export class Balancedle {
                 }
             } else if (this.animState === "retry") {
                 this.reset();
-                save({ puzzleId: this.puzzle.id, attempts: this.attempts, gameState: this.gameState, x: this.pose.x, y: this.pose.y, rotation: this.pose.rotation, hintStage: this.hintStage });
+                save({
+                    puzzleId: this.puzzle.id,
+                    attempts: this.attempts,
+                    gameState: this.gameState,
+                    x: this.pose.x,
+                    y: this.pose.y,
+                    rotation: this.pose.rotation,
+                    hintStage: this.hintStage,
+                });
             }
         } else if (this.gameState === "stats") {
             this.spawnConfetti();
@@ -387,16 +473,22 @@ export class Balancedle {
     private evalDrop(): void {
         if (!this.supportData) throw new Error("This should only be called after a drop with support data");
         const edgeAngle = angleFromHorizontal(this.supportData.edgeAngle);
-        const normalTorque = this.supportData.contactOffset.x * Math.cos(edgeAngle) + -Math.sign(this.supportData.contactOffset.y) * Math.min(Math.abs(this.supportData.contactOffset.y), 100) * Math.sin(edgeAngle);
-        console.log(normalTorque);
+        const normalTorque =
+            this.supportData.contactOffset.x * Math.cos(edgeAngle) +
+            -Math.sign(this.supportData.contactOffset.y) *
+                Math.min(Math.abs(this.supportData.contactOffset.y), 100) *
+                Math.sin(edgeAngle);
         const gravityTorque = this.supportData.contactOffset.x;
+
+        // console.log(`Gravity: ${gravityTorque}, Normal: ${normalTorque}, Angle: ${edgeAngle}`);
 
         if (Math.abs(gravityTorque) < MIN_ERROR && Math.abs(normalTorque) < (MIN_ERROR * 2) / 3) {
             this.dropError = 0;
             this.setAnimState("success");
         } else {
             this.dropError = gravityTorque + normalTorque * 0.3;
-            this.pose.vx = -Math.sign(gravityTorque) * clamp(Math.abs(this.dropError), 100, 200) * VELOCITY_ERROR_FACTOR;
+            this.pose.vx =
+                -Math.sign(gravityTorque) * clamp(Math.abs(this.dropError), 100, 200) * VELOCITY_ERROR_FACTOR;
             this.pose.vy = -Math.min(Math.abs(this.dropError), MAX_ERROR_BOUNCE) * VELOCITY_ERROR_FACTOR;
             this.pose.vr = -Math.sign(this.dropError) * Math.min(Math.abs(this.dropError), 200) * SPIN_ERROR_FACTOR;
             if (this.textHintQueue.length <= 1) {

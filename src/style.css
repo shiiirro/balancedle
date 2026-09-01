@@ -159,7 +159,7 @@ canvas {
     background: #f4f1e8;
     border-radius: 26px;
     text-align: center;
-    border: 1px solid rgba(17, 17, 15, 0.55);
+    border: 2px solid rgba(17, 17, 15, 0.55);
 }
 
 .close-button {
@@ -182,16 +182,9 @@ canvas {
 
 .result-title {
     margin: 14px 0 12px;
-    font-size: clamp(46px, 10vw, 72px);
+    font-size: 60px;
     line-height: 1;
     font-weight: 800;
-}
-
-.result-summary {
-    max-width: 430px;
-    margin: 0 auto;
-    font-size: 17px;
-    line-height: 1.5;
 }
 
 /* Personal stats */
@@ -228,7 +221,8 @@ canvas {
 .stat-label {
     margin-top: 9px;
     font-size: 14px;
-    line-height: 1.35;
+    line-height: 1.45;
+    font-weight: 500;
 }
 
 /* Global distribution */
@@ -322,14 +316,14 @@ canvas {
     background: #f4f1e8;
     border-radius: 26px;
     text-align: center;
-    border: 1px solid rgba(17, 17, 15, 0.55);
+    border: 2px solid rgba(17, 17, 15, 0.55);
 
 }
 
 .help-title {
     margin: 0 0 14px;
 
-    font-size: clamp(42px, 9vw, 56px);
+    font-size: clamp(38px, 9vw, 56px);
     line-height: 1;
     font-weight: 800;
 }
@@ -337,9 +331,10 @@ canvas {
 
 .help-gif {
     display: block;
-    width: min(100%, 360px);
-    max-height: 220px;
-    height: auto;
+    width: 100%;
+    /* width: min(100%, 360px); */
+    /* max-height: 220px;
+    height: auto; */
     margin: 0 auto 24px;
     object-fit: contain;
 }
@@ -348,57 +343,47 @@ canvas {
 
 .help-instructions {
     display: grid;
-    gap: 22px;
-
-    margin: 0 0 30px;
-
+    gap: 10px;
+    margin: 0 0 26px;
     text-align: left;
 }
 
 .help-step {
     display: grid;
-    grid-template-columns: 40px 1fr;
-    gap: 14px;
-
+    grid-template-columns: 34px 1fr;
+    gap: 12px;
     align-items: center;
 }
 
 .help-step-icon {
-    width: 40px;
-    height: 40px;
-
+    width: 32px;
+    height: 32px;
     display: grid;
     place-items: center;
-
     color: #11110f;
 }
 
 .help-step-icon svg {
     display: block;
-
-    width: 30px;
-    height: 30px;
-
+    width: 28px;
+    height: 28px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 2;
+    stroke-width: 2.1;
     stroke-linecap: square;
     stroke-linejoin: miter;
 }
 
-.help-step-content h2 {
-    margin: 0 0 5px;
-
-    font-size: 13px;
-    line-height: 1.2;
-    font-weight: 800;
+.help-step-content {
+    display: flex;
+    align-items: center;
 }
 
 .help-step-content p {
     margin: 0;
-
-    font-size: 14px;
+    font-size: 18px;
     line-height: 1.45;
+    font-weight: 500;
 }
 
 /* Goal */
@@ -446,12 +431,52 @@ canvas {
     opacity: 1;
 }
 
-/* Smaller screens */
+/* Smaller screens
 
 @media (max-width: 550px) {
     .overlay {
         padding: 12px;
         place-items: center;
+    }
+
+    .result-kicker {
+        font-size: 12px;
+    }
+
+    .result-title {
+        font-size: 44px;
+    }
+
+    .result-summary {
+        font-size: 15px;
+        line-height: 1.35;
+    }
+
+    .personal-stats {
+        margin: 28px 0 26px;
+    }
+
+    .stat-value {
+        font-size: 26px;
+    }
+
+    .stat-label {
+        margin-top: 6px;
+        font-size: 10px;
+    }
+
+    .distribution-label {
+        font-size: 12px;
+    }
+
+    .distribution-bar {
+        height: 28px;
+    }
+
+    .distribution-fill {
+        min-width: 34px;
+        padding: 0 8px;
+        font-size: 11px;
     }
 
     .result-card {
@@ -466,133 +491,54 @@ canvas {
         font-size: 26px;
     }
 
-    .result-kicker {
-        font-size: 11px;
+    .help-card {
+        width: 100%;
+        padding: 38px 20px 24px;
+        border-radius: 20px;
     }
 
-    .result-title {
-        margin: 10px 0 8px;
-        font-size: 42px;
+    .help-title {
+        margin-bottom: 12px;
+        font-size: 38px;
     }
 
-    .result-summary {
+    .help-gif {
+        width: 100%;
+        margin: 0 auto 18px;
+    }
+
+    .help-instructions {
+        gap: 8px;
+        margin-bottom: 18px;
+    }
+
+    .help-step {
+        grid-template-columns: 30px 1fr;
+        gap: 10px;
+    }
+
+    .help-step-icon {
+        width: 30px;
+        height: 30px;
+    }
+
+    .help-step-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .help-step-content p {
         font-size: 14px;
         line-height: 1.35;
     }
 
-    .personal-stats {
-        margin: 28px 0 26px;
-    }
-
-    .stats-title,
-    .distribution-title {
-        margin-bottom: 14px;
+    .help-goal {
+        margin: 0 0 22px;
         font-size: 11px;
-    }
-
-    .stats-grid {
-        gap: 8px;
-    }
-
-    .stat-value {
-        font-size: 24px;
-    }
-
-    .stat-label {
-        margin-top: 6px;
-        font-size: 8px;
-    }
-
-    .distribution-chart {
-        gap: 7px;
-    }
-
-    .distribution-row {
-        grid-template-columns: 24px 1fr;
-        gap: 7px;
-    }
-
-    .distribution-label {
-        font-size: 12px;
-    }
-
-    .distribution-bar {
-        height: 27px;
-    }
-
-    .distribution-fill {
-        min-width: 34px;
-        padding: 0 8px;
-        font-size: 11px;
-    }
-
-    .result-actions {
-        margin-top: 24px;
     }
 
     .secondary-button {
         height: 46px;
         font-size: 11px;
     }
-
-    .title-group {
-        gap: 70px;
-    }
-
-    .title {
-        font-size: 24px;
-    }
-
-    .topbar-button {
-        width: 34px;
-        height: 34px;
-    }
-
-    .topbar-button svg {
-        width: 26px;
-        height: 26px;
-    }
-
-    .help-card {
-        padding: 42px 24px;
-        max-height: calc(100vh - 32px);
-    }
-
-    .help-title {
-        font-size: 40px;
-    }
-
-    .help-instructions {
-        gap: 18px;
-    }
-
-    .help-step {
-        grid-template-columns: 34px 1fr;
-        gap: 12px;
-    }
-
-    .help-step-icon {
-        width: 34px;
-        height: 34px;
-    }
-
-    .help-step-icon svg {
-        width: 26px;
-        height: 26px;
-    }
-
-    .help-step-content p {
-        font-size: 13px;
-    }
-
-    .help-goal {
-        font-size: 12px;
-    }
-
-    .finish-notification {
-        top: 102px;
-        width: min(320px, calc(100% - 32px));
-        padding: 14px 18px;
-        font-size: 11px;
-    }
-}
+} */

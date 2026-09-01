@@ -21,7 +21,6 @@ const resultOverlay = requiredElement<HTMLElement>("#resultOverlay");
 
 const resultKicker = requiredElement<HTMLElement>("#resultKicker");
 const resultTitle = requiredElement<HTMLElement>("#resultTitle");
-const resultSummary = requiredElement<HTMLElement>("#resultSummary");
 
 const averageAttempts = requiredElement<HTMLElement>("#averageAttempts");
 const daysPlayed = requiredElement<HTMLElement>("#daysPlayed");
@@ -68,8 +67,6 @@ async function showResult(attempts: number): Promise<void> {
     resultKicker.textContent = `BALANCEDLE (${game.puzzle.id})`;
 
     resultTitle.textContent = `${attempts} ${attempts === 1 ? "ATTEMPT" : "ATTEMPTS"}`;
-
-    resultSummary.textContent = attempts === 1 ? "Perfect. You solved today's puzzle on your first attempt." : `You solved today's puzzle in ${attempts} attempts.`;
 
     averageAttempts.textContent = data?.stats?.averageAttempts.toFixed(1) || "0.0";
 
